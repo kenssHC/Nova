@@ -4,9 +4,10 @@ import { supabase } from "@/lib/supabase"
 // GET: Obtener un producto por ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { data, error } = await supabase
       .from("productos")
       .select(`
@@ -16,7 +17,7 @@ export async function GET(
           nombre
         )
       `)
-      .eq("id", params.id)
+      .eq("id", id)
       .single()
 
     if (error) {
@@ -46,9 +47,10 @@ export async function GET(
 // PUT: Actualizar un producto
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
 
     // Validaciones
@@ -84,7 +86,7 @@ export async function PUT(
       )
     }
 
-    const updateData: any = {}
+    const updateData: Partial<typeof body> = {}
     if (body.nombre !== undefined) updateData.nombre = body.nombre
     if (body.descripcion !== undefined) updateData.descripcion = body.descripcion
     if (body.precio_compra !== undefined) updateData.precio_compra = body.precio_compra
@@ -98,8 +100,8 @@ export async function PUT(
 
     const { data, error } = await supabase
       .from("productos")
-      .update(updateData)
-      .eq("id", params.id)
+      .update(updateData as never)
+      .eq("id", id)
       .select()
       .single()
 
@@ -130,14 +132,15 @@ export async function PUT(
 // DELETE: Eliminar un producto (soft delete)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     // Soft delete: marcar como inactivo en lugar de eliminar
     const { data, error } = await supabase
       .from("productos")
-      .update({ activo: false })
-      .eq("id", params.id)
+      .update({ activo: false } as never)
+      .eq("id", id)
       .select()
       .single()
 

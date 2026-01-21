@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
           categoria_id: body.categoria_id || null,
           activo: body.activo !== undefined ? body.activo : true,
         },
-      ])
+      ] as never)
       .select()
       .single()
 

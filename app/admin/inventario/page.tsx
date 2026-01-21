@@ -18,18 +18,19 @@ import { Package, Pencil, Check, X, AlertTriangle } from "lucide-react"
 import { formatPrice } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import Image from "next/image"
+import type { ProductoConCategoria } from "@/types/database"
 
 export default function InventarioPage() {
   const { toast } = useToast()
 
-  const [productos, setProductos] = useState<any[]>([])
+  const [productos, setProductos] = useState<ProductoConCategoria[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editStock, setEditStock] = useState("")
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadData = async () => {
     try {
@@ -47,7 +48,7 @@ export default function InventarioPage() {
     }
   }
 
-  const handleEditStock = (producto: any) => {
+  const handleEditStock = (producto: ProductoConCategoria) => {
     setEditingId(producto.id)
     setEditStock(producto.stock.toString())
   }
@@ -65,10 +66,11 @@ export default function InventarioPage() {
 
       setEditingId(null)
       loadData()
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "No se pudo actualizar el stock"
       toast({
         title: "Error",
-        description: error.message || "No se pudo actualizar el stock",
+        description: errorMessage,
         variant: "destructive",
       })
     }

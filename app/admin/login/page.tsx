@@ -33,8 +33,9 @@ export default function LoginPage() {
         document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=3600`
         router.push(redirect)
       }
-    } catch (err: any) {
-      setError(err.message || "Error al iniciar sesión")
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Error al iniciar sesión"
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }

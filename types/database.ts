@@ -6,6 +6,16 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+// Tipos de utilidad
+export type Producto = Database['public']['Tables']['productos']['Row']
+export type Categoria = Database['public']['Tables']['categorias']['Row']
+export type Venta = Database['public']['Tables']['ventas']['Row']
+
+// Tipos con relaciones
+export type ProductoConCategoria = Producto & {
+  categorias?: Categoria | null
+}
+
 export interface Database {
   public: {
     Tables: {

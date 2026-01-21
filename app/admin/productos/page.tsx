@@ -37,22 +37,23 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import Image from "next/image"
+import type { ProductoConCategoria, Categoria } from "@/types/database"
 
 export default function ProductosPage() {
   const router = useRouter()
   const { toast } = useToast()
 
-  const [productos, setProductos] = useState<any[]>([])
-  const [categorias, setCategorias] = useState<any[]>([])
+  const [productos, setProductos] = useState<ProductoConCategoria[]>([])
+  const [categorias, setCategorias] = useState<Categoria[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [categoriaFilter, setCategoriaFilter] = useState<string>("all")
-  const [productoToDelete, setProductoToDelete] = useState<any>(null)
+  const [productoToDelete, setProductoToDelete] = useState<ProductoConCategoria | null>(null)
   const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadData = async () => {
     try {
@@ -85,10 +86,11 @@ export default function ProductosPage() {
         description: "El producto se eliminó correctamente",
       })
       loadData()
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "No se pudo eliminar el producto"
       toast({
         title: "Error",
-        description: error.message || "No se pudo eliminar el producto",
+        description: errorMessage,
         variant: "destructive",
       })
     } finally {
@@ -307,7 +309,7 @@ export default function ProductosPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción eliminará el producto "{productoToDelete?.nombre}". 
+              Esta acción eliminará el producto &quot;{productoToDelete?.nombre}&quot;. 
               Esta operación no se puede deshacer.
             </AlertDialogDescription>
           </AlertDialogHeader>

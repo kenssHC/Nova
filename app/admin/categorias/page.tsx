@@ -27,11 +27,12 @@ import { EmptyState } from "@/components/empty-state"
 import { Plus, Tag, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { formatDate } from "@/lib/utils"
+import type { Categoria } from "@/types/database"
 
 export default function CategoriasPage() {
   const { toast } = useToast()
 
-  const [categorias, setCategorias] = useState<any[]>([])
+  const [categorias, setCategorias] = useState<Categoria[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -39,7 +40,7 @@ export default function CategoriasPage() {
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadData = async () => {
     try {
@@ -72,10 +73,11 @@ export default function CategoriasPage() {
       setNombreCategoria("")
       setDialogOpen(false)
       loadData()
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "No se pudo crear la categoría"
       toast({
         title: "Error",
-        description: error.message || "No se pudo crear la categoría",
+        description: errorMessage,
         variant: "destructive",
       })
     } finally {

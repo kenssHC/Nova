@@ -17,11 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Search, Truck, Shield, Zap, MoreHorizontal } from "lucide-react"
+import { Search, MoreHorizontal, Package } from "lucide-react"
+import type { ProductoConCategoria, Categoria } from "@/types/database"
 
 export default function Home() {
-  const [productos, setProductos] = useState<any[]>([])
-  const [categorias, setCategorias] = useState<any[]>([])
+  const [productos, setProductos] = useState<ProductoConCategoria[]>([])
+  const [categorias, setCategorias] = useState<Categoria[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)

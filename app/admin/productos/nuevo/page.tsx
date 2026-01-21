@@ -7,12 +7,15 @@ import { useToast } from "@/hooks/use-toast"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import type { Database } from "@/types/database"
+
+type ProductoInsert = Database['public']['Tables']['productos']['Insert']
 
 export default function NuevoProductoPage() {
   const router = useRouter()
   const { toast } = useToast()
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: ProductoInsert) => {
     await createProducto(data)
     
     toast({

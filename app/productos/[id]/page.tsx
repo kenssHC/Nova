@@ -12,11 +12,12 @@ import { formatPrice } from "@/lib/utils"
 import { ArrowLeft, Package, CheckCircle, AlertTriangle, XCircle } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import type { ProductoConCategoria } from "@/types/database"
 
 export default function ProductoDetalle() {
   const params = useParams()
   const router = useRouter()
-  const [producto, setProducto] = useState<any>(null)
+  const [producto, setProducto] = useState<ProductoConCategoria | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -181,7 +182,7 @@ export default function ProductoDetalle() {
                   productPrice={precioFinal}
                   originalPrice={tieneDescuento ? producto.precio_venta : undefined}
                   discount={tieneDescuento ? producto.descuento_porcentaje : undefined}
-                  productImage={producto.imagen_url}
+                  productImage={producto.imagen_url || undefined}
                   className="w-full py-6 text-lg"
                   variant={isOutOfStock ? "outline" : "default"}
                 />

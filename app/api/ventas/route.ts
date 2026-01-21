@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
       .from("productos")
       .select("precio_compra, precio_venta, stock")
       .eq("id", body.producto_id)
-      .single()
+      .single() as { data: { precio_compra: number; precio_venta: number; stock: number } | null; error: unknown }
 
     if (productoError || !producto) {
       return NextResponse.json(
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
           ganancia: ganancia,
           cliente_nombre: body.cliente_nombre || null,
         },
-      ])
+      ] as never)
       .select(`
         *,
         productos (

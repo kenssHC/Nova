@@ -30,7 +30,7 @@ export async function GET() {
 // POST: Crear una nueva categoría
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const body = await request.json() as { nombre?: string }
 
     if (!body.nombre) {
       return NextResponse.json(
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabase
       .from("categorias")
-      .insert([{ nombre: body.nombre }])
+      .insert([{ nombre: body.nombre }] as never)
       .select()
       .single()
 

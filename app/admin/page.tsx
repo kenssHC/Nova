@@ -31,12 +31,52 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import Image from "next/image"
+import type { ProductoConCategoria } from "@/types/database"
 
 const COLORS = ["#96305a", "#ca678e", "#b08e6b", "#e8c39e", "#f5e1ce"]
 
+interface VentaDia {
+  fecha: string
+  total_ganancias: number
+}
+
+interface TopProducto {
+  nombre: string
+  cantidad_total: number
+  ganancia_total: number
+  categoria: string | null
+}
+
+interface ProductoStockBajo {
+  id: string
+  nombre: string
+  stock: number
+}
+
+interface VentasStats {
+  resumen: {
+    total_ventas: number
+    total_ganancias: number
+  }
+  ventas_por_dia: VentaDia[]
+  top_productos: TopProducto[]
+  productos_stock_bajo: ProductoStockBajo[]
+}
+
+interface VentaConProducto {
+  id: string
+  producto_id: string
+  cantidad: number
+  precio_venta: number
+  ganancia: number
+  fecha_venta: string
+  cliente_nombre: string | null
+  productos?: ProductoConCategoria | null
+}
+
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<any>(null)
-  const [ultimasVentas, setUltimasVentas] = useState<any[]>([])
+  const [stats, setStats] = useState<VentasStats | null>(null)
+  const [ultimasVentas, setUltimasVentas] = useState<VentaConProducto[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -58,13 +98,13 @@ export default function AdminDashboard() {
   }
 
   // Preparar datos para gráfico de líneas (últimos 30 días)
-  const lineChartData = stats?.ventas_por_dia?.slice(-30).map((day: any) => ({
+  const lineChartData = stats?.ventas_por_dia?.slice(-30).map((day) => ({
     fecha: new Date(day.fecha).toLocaleDateString("es-CO", { day: "2-digit", month: "short" }),
     ganancias: day.total_ganancias,
   })) || []
 
   // Preparar datos para gráfico de barras (top 10 productos)
-  const barChartData = stats?.top_productos?.slice(0, 10).map((producto: any) => ({
+  const barChartData = stats?.top_productos?.slice(0, 10).map((producto) => ({
     nombre: producto.nombre.length > 15 ? producto.nombre.substring(0, 15) + "..." : producto.nombre,
     cantidad: producto.cantidad_total,
     ganancias: producto.ganancia_total,
@@ -72,7 +112,7 @@ export default function AdminDashboard() {
 
   // Preparar datos para gráfico circular (ventas por categoría)
   const categoryStats: Record<string, number> = {}
-  stats?.top_productos?.forEach((producto: any) => {
+  stats?.top_productos?.forEach((producto) => {
     const categoria = producto.categoria || "Sin categoría"
     categoryStats[categoria] = (categoryStats[categoria] || 0) + producto.ganancia_total
   })
@@ -81,7 +121,7 @@ export default function AdminDashboard() {
     value,
   }))
 
-  const promedioGanancia = stats?.resumen?.total_ventas > 0 
+  const promedioGanancia = stats?.resumen?.total_ventas && stats.resumen.total_ventas > 0 
     ? stats.resumen.total_ganancias / stats.resumen.total_ventas 
     : 0
 
@@ -169,7 +209,7 @@ export default function AdminDashboard() {
                   <XAxis dataKey="fecha" />
                   <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
                   <Tooltip
-                    formatter={(value: any) => formatPrice(value)}
+                    formatter={(value) => formatPrice(Number(value))}
                     labelStyle={{ color: "#000" }}
                   />
                   <Legend />
@@ -204,8 +244,8 @@ export default function AdminDashboard() {
                   <XAxis dataKey="nombre" angle={-45} textAnchor="end" height={100} />
                   <YAxis />
                   <Tooltip
-                    formatter={(value: any, name: string) =>
-                      name === "ganancias" ? formatPrice(value) : value
+                    formatter={(value, name) =>
+                      name === "ganancias" ? formatPrice(Number(value)) : value
                     }
                   />
                   <Legend />
@@ -235,7 +275,7 @@ export default function AdminDashboard() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
@@ -244,7 +284,7 @@ export default function AdminDashboard() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: any) => formatPrice(value)} />
+                  <Tooltip formatter={(value) => formatPrice(Number(value))} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
@@ -323,7 +363,7 @@ export default function AdminDashboard() {
       </Card>
 
       {/* Alertas de Stock Bajo */}
-      {stats?.productos_stock_bajo?.length > 0 && (
+      {stats?.productos_stock_bajo && stats.productos_stock_bajo.length > 0 && (
         <Card className="border-orange-200 bg-orange-50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-orange-800">
@@ -333,7 +373,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-              {stats.productos_stock_bajo.map((producto: any) => (
+              {stats.productos_stock_bajo.map((producto) => (
                 <div
                   key={producto.id}
                   className="flex items-center justify-between p-3 bg-white rounded-lg"

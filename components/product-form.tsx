@@ -20,10 +20,24 @@ import { useToast } from "@/hooks/use-toast"
 import { Upload, X, Loader2, Tag } from "lucide-react"
 import Image from "next/image"
 import { Checkbox } from "@/components/ui/checkbox"
+import type { Categoria } from "@/types/database"
+
+interface ProductFormData {
+  nombre: string
+  descripcion?: string | null
+  precio_compra: number
+  precio_venta: number
+  descuento_porcentaje?: number
+  descuento_activo?: boolean
+  stock?: number
+  imagen_url?: string | null
+  categoria_id?: string | null
+  activo?: boolean
+}
 
 interface ProductFormProps {
-  initialData?: any
-  onSubmit: (data: any) => Promise<void>
+  initialData?: Partial<ProductFormData & { id: string }>
+  onSubmit: (data: ProductFormData) => Promise<void>
   submitLabel: string
 }
 
@@ -31,7 +45,7 @@ export function ProductForm({ initialData, onSubmit, submitLabel }: ProductFormP
   const router = useRouter()
   const { toast } = useToast()
 
-  const [categorias, setCategorias] = useState<any[]>([])
+  const [categorias, setCategorias] = useState<Categoria[]>([])
   const [loading, setLoading] = useState(false)
   const [loadingCategorias, setLoadingCategorias] = useState(true)
   const [uploadingImage, setUploadingImage] = useState(false)
@@ -131,10 +145,11 @@ export function ProductForm({ initialData, onSubmit, submitLabel }: ProductFormP
         imagen_url: imagenUrl || null,
         activo: formData.activo,
       })
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Ocurrió un error"
       toast({
         title: "Error",
-        description: error.message || "Ocurrió un error",
+        description: errorMessage,
         variant: "destructive",
       })
     } finally {

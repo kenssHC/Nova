@@ -1,5 +1,22 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
+import type { Venta } from "@/types/database"
+
+interface ProductoVendido {
+  producto_id: string
+  cantidad_total: number
+  ganancia_total: number
+  num_ventas: number
+  nombre?: string
+  imagen_url?: string | null
+  categoria?: string | null
+}
+
+interface VentaPorDia {
+  fecha: string
+  total_ventas: number
+  total_ganancias: number
+}
 
 // GET: Obtener estadísticas de ventas
 export async function GET(request: NextRequest) {
@@ -9,7 +26,7 @@ export async function GET(request: NextRequest) {
 
     // Calcular fecha de inicio según el período
     const ahora = new Date()
-    let fechaInicio = new Date()
+    const fechaInicio = new Date()
 
     switch (periodo) {
       case "dia":
@@ -30,7 +47,7 @@ export async function GET(request: NextRequest) {
     const { data: ventas, error: ventasError } = await supabase
       .from("ventas")
       .select("*")
-      .gte("fecha_venta", fechaInicio.toISOString())
+      .gte("fecha_venta", fechaInicio.toISOString()) as { data: Venta[] | null; error: unknown }
 
     if (ventasError) {
       console.error("Error al obtener ventas:", ventasError)
@@ -46,7 +63,7 @@ export async function GET(request: NextRequest) {
     const promedioGanancia = totalVentas > 0 ? totalGanancias / totalVentas : 0
 
     // Productos más vendidos
-    const productosMasVendidos = ventas?.reduce((acc: any, venta) => {
+    const productosMasVendidos = ventas?.reduce((acc: Record<string, ProductoVendido>, venta) => {
       const productoId = venta.producto_id
       if (!acc[productoId]) {
         acc[productoId] = {
@@ -60,21 +77,21 @@ export async function GET(request: NextRequest) {
       acc[productoId].ganancia_total += Number(venta.ganancia)
       acc[productoId].num_ventas += 1
       return acc
-    }, {})
+    }, {} as Record<string, ProductoVendido>)
 
     const topProductos = Object.values(productosMasVendidos || {})
-      .sort((a: any, b: any) => b.cantidad_total - a.cantidad_total)
+      .sort((a, b) => b.cantidad_total - a.cantidad_total)
       .slice(0, 10)
 
     // Obtener información de productos
     if (topProductos.length > 0) {
-      const productosIds = topProductos.map((p: any) => p.producto_id)
+      const productosIds = topProductos.map((p) => p.producto_id)
       const { data: productosInfo } = await supabase
         .from("productos")
         .select("id, nombre, imagen_url")
-        .in("id", productosIds)
+        .in("id", productosIds) as { data: { id: string; nombre: string; imagen_url: string | null }[] | null }
 
-      topProductos.forEach((producto: any) => {
+      topProductos.forEach((producto) => {
         const info = productosInfo?.find((p) => p.id === producto.producto_id)
         if (info) {
           producto.nombre = info.nombre
@@ -84,7 +101,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Ventas por día (últimos 30 días)
-    const ventasPorDia = ventas?.reduce((acc: any, venta) => {
+    const ventasPorDia = ventas?.reduce((acc: Record<string, VentaPorDia>, venta) => {
       const fecha = new Date(venta.fecha_venta).toISOString().split("T")[0]
       if (!acc[fecha]) {
         acc[fecha] = {
@@ -96,10 +113,10 @@ export async function GET(request: NextRequest) {
       acc[fecha].total_ventas += 1
       acc[fecha].total_ganancias += Number(venta.ganancia)
       return acc
-    }, {})
+    }, {} as Record<string, VentaPorDia>)
 
     const ventasPorDiaArray = Object.values(ventasPorDia || {}).sort(
-      (a: any, b: any) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
+      (a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
     )
 
     // Productos con stock bajo

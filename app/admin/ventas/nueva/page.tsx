@@ -21,12 +21,13 @@ import Link from "next/link"
 import { formatPrice } from "@/lib/utils"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import Image from "next/image"
+import type { ProductoConCategoria } from "@/types/database"
 
 export default function NuevaVentaPage() {
   const router = useRouter()
   const { toast } = useToast()
 
-  const [productos, setProductos] = useState<any[]>([])
+  const [productos, setProductos] = useState<ProductoConCategoria[]>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
 
@@ -62,10 +63,11 @@ export default function NuevaVentaPage() {
       })
 
       router.push("/admin/ventas")
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "No se pudo registrar la venta"
       toast({
         title: "Error",
-        description: error.message || "No se pudo registrar la venta",
+        description: errorMessage,
         variant: "destructive",
       })
     } finally {

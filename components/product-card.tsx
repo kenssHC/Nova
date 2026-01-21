@@ -48,7 +48,7 @@ export function ProductCard({
       precio_venta,
       descuento_porcentaje,
       descuento_activo,
-      imagen_url,
+      imagen_url: imagen_url || null,
       stock,
     })
   }

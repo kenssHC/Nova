@@ -26,12 +26,14 @@ export async function getProducto(id: string) {
 
 export async function createProducto(producto: {
   nombre: string
-  descripcion?: string
+  descripcion?: string | null
   precio_compra: number
   precio_venta: number
+  descuento_porcentaje?: number
+  descuento_activo?: boolean
   stock?: number
-  imagen_url?: string
-  categoria_id?: string
+  imagen_url?: string | null
+  categoria_id?: string | null
   activo?: boolean
 }) {
   const res = await fetch("/api/productos", {
@@ -50,12 +52,14 @@ export async function updateProducto(
   id: string,
   producto: {
     nombre?: string
-    descripcion?: string
+    descripcion?: string | null
     precio_compra?: number
     precio_venta?: number
+    descuento_porcentaje?: number
+    descuento_activo?: boolean
     stock?: number
-    imagen_url?: string
-    categoria_id?: string
+    imagen_url?: string | null
+    categoria_id?: string | null
     activo?: boolean
   }
 ) {
@@ -128,7 +132,7 @@ export async function getVentas(filters?: {
 export async function createVenta(venta: {
   producto_id: string
   cantidad: number
-  cliente_nombre?: string
+  cliente_nombre?: string | null
 }) {
   const res = await fetch("/api/ventas", {
     method: "POST",

@@ -9,19 +9,22 @@ import { useToast } from "@/hooks/use-toast"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import type { Producto, Database } from "@/types/database"
+
+type ProductoUpdate = Database['public']['Tables']['productos']['Update']
 
 export default function EditarProductoPage() {
   const router = useRouter()
   const params = useParams()
   const { toast } = useToast()
-  const [producto, setProducto] = useState<any>(null)
+  const [producto, setProducto] = useState<Producto | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (params.id) {
       getProducto(params.id as string)
         .then(setProducto)
-        .catch((error) => {
+        .catch(() => {
           toast({
             title: "Error",
             description: "No se pudo cargar el producto",
@@ -33,7 +36,7 @@ export default function EditarProductoPage() {
     }
   }, [params.id, router, toast])
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: ProductoUpdate) => {
     await updateProducto(params.id as string, data)
     
     toast({

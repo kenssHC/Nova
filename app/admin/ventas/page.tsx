@@ -27,13 +27,26 @@ import { Plus, ShoppingCart, Calendar } from "lucide-react"
 import { formatPrice, formatDate } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import Image from "next/image"
+import type { ProductoConCategoria } from "@/types/database"
+
+interface VentaConProducto {
+  id: string
+  producto_id: string
+  cantidad: number
+  precio_venta: number
+  precio_compra: number
+  ganancia: number
+  fecha_venta: string
+  cliente_nombre: string | null
+  productos?: ProductoConCategoria | null
+}
 
 export default function VentasPage() {
   const router = useRouter()
   const { toast } = useToast()
 
-  const [ventas, setVentas] = useState<any[]>([])
-  const [productos, setProductos] = useState<any[]>([])
+  const [ventas, setVentas] = useState<VentaConProducto[]>([])
+  const [productos, setProductos] = useState<ProductoConCategoria[]>([])
   const [loading, setLoading] = useState(true)
   const [productoFilter, setProductoFilter] = useState<string>("all")
   const [fechaInicio, setFechaInicio] = useState("")
@@ -41,7 +54,7 @@ export default function VentasPage() {
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadData = async () => {
     try {
