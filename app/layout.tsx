@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ConditionalWhatsApp } from "@/components/conditional-whatsapp";
+import { Providers } from "@/components/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -68,9 +69,11 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        {children}
-        <ConditionalWhatsApp />
-        <Toaster />
+        <Providers>
+          {children}
+          <ConditionalWhatsApp />
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );

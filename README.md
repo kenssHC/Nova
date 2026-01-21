@@ -2,6 +2,13 @@
 
 Sistema de tienda virtual para gestión de productos, ventas y análisis de ganancias.
 
+## 🔄 Últimas Actualizaciones (Enero 2026)
+
+- ❌ **Removido:** Banner promocional top (optimización de espacio)
+- ✨ **Nuevo:** Sistema híbrido de filtros de categorías (primeras 3 visibles + dropdown para el resto)
+- 🔄 **Reorganizado:** Carrusel de ofertas movido antes de búsqueda/filtros (mayor destaque)
+- ⚡ **Mejora:** Interfaz más compacta y limpia (~120px de espacio optimizado)
+
 ## Colores de Marca
 
 - **Brown**: `#b08e6b`
@@ -58,17 +65,22 @@ NEXT_PUBLIC_WHATSAPP_NUMBER=976575550
 ## Funcionalidades
 
 ### Catálogo Público
-- Visualización de productos
+- Visualización de productos con grid responsive
+- Carrusel de ofertas especiales
 - Filtros por categoría
-- Búsqueda
-- Integración con WhatsApp para compras
+- Búsqueda en tiempo real
+- Ordenamiento (precio, nuevo, descuento)
+- Sistema de carrito de compras
+- Integración con WhatsApp (individual y múltiple)
+- Trust badges y banner promocional
 
 ### Panel Administrativo
-- CRUD de productos
-- Gestión de inventario
+- CRUD de productos con descuentos
+- Gestión de inventario automática
 - Registro de ventas
 - Dashboard con estadísticas de ganancias
-- Gráficos de análisis
+- Gráficos de análisis (Recharts)
+- Gestión de categorías
 
 ## Fases de Desarrollo
 
@@ -85,6 +97,7 @@ NEXT_PUBLIC_WHATSAPP_NUMBER=976575550
 - [x] Fase 7 - Sesión 12: Inventario automático
 - [x] Fase 7 - Sesión 13: Gestión de categorías
 - [x] Fase 8 - Sesión 14: Optimizaciones y Deploy
+- [x] Mejoras Adicionales: Sistema de carrito y mejoras visuales
 
 ## Deploy a Producción
 
@@ -114,6 +127,9 @@ npm run lint     # Linter de código
 - **[FASE-6-COMPLETA.md](./FASE-6-COMPLETA.md)** - Catálogo público
 - **[FASE-7-COMPLETA.md](./FASE-7-COMPLETA.md)** - Funcionalidades adicionales
 - **[FASE-8-COMPLETA.md](./FASE-8-COMPLETA.md)** - Optimizaciones y deploy
+- **[DESCUENTOS-IMPLEMENTACION.md](./DESCUENTOS-IMPLEMENTACION.md)** - Sistema de descuentos
+- **[MEJORAS-VISUALES-Y-CARRITO.md](./MEJORAS-VISUALES-Y-CARRITO.md)** - Carrito y mejoras UI
+- **[CAMBIOS-RECIENTES.md](./CAMBIOS-RECIENTES.md)** - Últimas optimizaciones (Enero 2026)
 
 ## Estado del Proyecto
 

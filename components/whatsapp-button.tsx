@@ -12,6 +12,7 @@ interface WhatsAppButtonProps {
   productImage?: string
   className?: string
   variant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive"
+  size?: "default" | "sm" | "lg" | "icon"
 }
 
 export function WhatsAppButton({
@@ -22,6 +23,7 @@ export function WhatsAppButton({
   productImage,
   className = "",
   variant = "default",
+  size = "default",
 }: WhatsAppButtonProps) {
   const handleClick = () => {
     const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "976575550"
@@ -63,9 +65,10 @@ export function WhatsAppButton({
           : ""
       }`}
       variant={variant}
+      size={size}
     >
-      <MessageCircle className="mr-2 h-4 w-4" />
-      Comprar por WhatsApp
+      <MessageCircle className={size === "sm" ? "mr-1 h-3 w-3" : "mr-2 h-4 w-4"} />
+      {size === "sm" ? "WhatsApp" : "Comprar por WhatsApp"}
     </Button>
   )
 }

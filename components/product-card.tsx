@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { formatPrice } from "@/lib/utils"
-import { Package, Eye } from "lucide-react"
+import { useCart } from "@/contexts/cart-context"
+import { Package, Eye, ShoppingCart } from "lucide-react"
 
 interface ProductCardProps {
   id: string
@@ -32,12 +33,25 @@ export function ProductCard({
   imagen_url,
   categoria,
 }: ProductCardProps) {
+  const { addToCart } = useCart()
   const isOutOfStock = stock === 0
   const isLowStock = stock > 0 && stock < 5
   const tieneDescuento = descuento_activo && descuento_porcentaje > 0
   const precioFinal = tieneDescuento
     ? precio_venta * (1 - descuento_porcentaje / 100)
     : precio_venta
+
+  const handleAddToCart = () => {
+    addToCart({
+      id,
+      nombre,
+      precio_venta,
+      descuento_porcentaje,
+      descuento_activo,
+      imagen_url,
+      stock,
+    })
+  }
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -132,15 +146,27 @@ export function ProductCard({
       </CardContent>
 
       <CardFooter className="p-4 pt-0 flex flex-col gap-2">
-        <Link href={`/productos/${id}`} className="w-full">
-          <Button 
-            variant="outline" 
-            className="w-full border-brand-wine text-brand-wine hover:bg-brand-wine hover:text-white"
+        <div className="flex gap-2 w-full">
+          <Link href={`/productos/${id}`} className="flex-1">
+            <Button 
+              variant="outline" 
+              className="w-full border-brand-wine text-brand-wine hover:bg-brand-wine hover:text-white"
+              size="sm"
+            >
+              <Eye className="mr-1 h-4 w-4" />
+              Ver
+            </Button>
+          </Link>
+          <Button
+            onClick={handleAddToCart}
+            disabled={isOutOfStock}
+            className="flex-1 bg-brand-wine hover:bg-brand-wine/90"
+            size="sm"
           >
-            <Eye className="mr-2 h-4 w-4" />
-            Ver Detalles
+            <ShoppingCart className="mr-1 h-4 w-4" />
+            Agregar
           </Button>
-        </Link>
+        </div>
         <WhatsAppButton
           productName={nombre}
           productPrice={precioFinal}
@@ -148,7 +174,8 @@ export function ProductCard({
           discount={tieneDescuento ? descuento_porcentaje : undefined}
           productImage={imagen_url || undefined}
           className="w-full"
-          variant={isOutOfStock ? "outline" : "default"}
+          variant={isOutOfStock ? "outline" : "secondary"}
+          size="sm"
         />
       </CardFooter>
     </Card>
