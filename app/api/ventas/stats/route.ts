@@ -83,19 +83,34 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.cantidad_total - a.cantidad_total)
       .slice(0, 10)
 
-    // Obtener información de productos
+    // Obtener información de productos con sus categorías
     if (topProductos.length > 0) {
       const productosIds = topProductos.map((p) => p.producto_id)
       const { data: productosInfo } = await supabase
         .from("productos")
-        .select("id, nombre, imagen_url")
-        .in("id", productosIds) as { data: { id: string; nombre: string; imagen_url: string | null }[] | null }
+        .select(`
+          id,
+          nombre,
+          imagen_url,
+          categorias (
+            nombre
+          )
+        `)
+        .in("id", productosIds) as { 
+          data: { 
+            id: string; 
+            nombre: string; 
+            imagen_url: string | null;
+            categorias: { nombre: string } | null;
+          }[] | null 
+        }
 
       topProductos.forEach((producto) => {
         const info = productosInfo?.find((p) => p.id === producto.producto_id)
         if (info) {
           producto.nombre = info.nombre
           producto.imagen_url = info.imagen_url
+          producto.categoria = info.categorias?.nombre || null
         }
       })
     }

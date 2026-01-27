@@ -207,7 +207,12 @@ export default function AdminDashboard() {
                 <LineChart data={lineChartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="fecha" />
-                  <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+                  <YAxis tickFormatter={(value) => {
+                    if (value >= 1000) {
+                      return `$${(value / 1000).toFixed(1)}k`
+                    }
+                    return `$${value}`
+                  }} />
                   <Tooltip
                     formatter={(value) => formatPrice(Number(value))}
                     labelStyle={{ color: "#000" }}

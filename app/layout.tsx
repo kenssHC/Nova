@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Parisienne } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ConditionalWhatsApp } from "@/components/conditional-whatsapp";
@@ -7,13 +7,20 @@ import { Providers } from "@/components/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const parisienne = Parisienne({ 
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-parisienne",
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "Nova - Perfumería y Cuidado Personal",
-    template: "%s | Nova",
+    default: "Oasis de Fragancias - Perfumería y Cuidado Personal",
+    template: "%s | Oasis de Fragancias",
   },
   description:
-    "Descubre los mejores productos de perfumería y cuidado personal en Nova. Perfumes, cremas, shampoos y más. Compra fácil por WhatsApp.",
+    "Descubre los mejores productos de perfumería y cuidado personal en Oasis de Fragancias. Perfumes, cremas, shampoos y más. Compra fácil por WhatsApp.",
   keywords: [
     "perfumería",
     "cuidado personal",
@@ -22,11 +29,11 @@ export const metadata: Metadata = {
     "shampoo",
     "cosméticos",
     "belleza",
-    "Nova",
+    "Oasis de Fragancias",
   ],
-  authors: [{ name: "Nova" }],
-  creator: "Nova",
-  publisher: "Nova",
+  authors: [{ name: "Oasis de Fragancias" }],
+  creator: "Oasis de Fragancias",
+  publisher: "Oasis de Fragancias",
   formatDetection: {
     email: false,
     address: false,
@@ -34,19 +41,19 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   openGraph: {
-    title: "Nova - Perfumería y Cuidado Personal",
+    title: "Oasis de Fragancias - Perfumería y Cuidado Personal",
     description:
-      "Descubre los mejores productos de perfumería y cuidado personal en Nova.",
+      "Descubre los mejores productos de perfumería y cuidado personal en Oasis de Fragancias.",
     url: "/",
-    siteName: "Nova",
+    siteName: "Oasis de Fragancias",
     locale: "es_CO",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nova - Perfumería y Cuidado Personal",
+    title: "Oasis de Fragancias - Perfumería y Cuidado Personal",
     description:
-      "Descubre los mejores productos de perfumería y cuidado personal en Nova.",
+      "Descubre los mejores productos de perfumería y cuidado personal en Oasis de Fragancias.",
   },
   robots: {
     index: true,
@@ -68,6 +75,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" 
+          rel="stylesheet" 
+        />
+      </head>
       <body className={inter.className}>
         <Providers>
           {children}

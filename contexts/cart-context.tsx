@@ -34,7 +34,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Cargar carrito desde localStorage al montar
   useEffect(() => {
     setIsClient(true)
-    const savedCart = localStorage.getItem("nova-cart")
+    const savedCart = localStorage.getItem("oasis-de-fragancias-cart")
     if (savedCart) {
       try {
         setItems(JSON.parse(savedCart))
@@ -47,7 +47,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Guardar carrito en localStorage cuando cambie
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem("nova-cart", JSON.stringify(items))
+      localStorage.setItem("oasis-de-fragancias-cart", JSON.stringify(items))
     }
   }, [items, isClient])
 

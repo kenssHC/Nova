@@ -51,7 +51,7 @@ export default function LoginPage() {
             </div>
           </div>
           <div className="text-center">
-            <CardTitle className="text-2xl font-bold text-brand-wine">Nova Admin</CardTitle>
+            <CardTitle className="text-2xl text-brand-wine font-brand tracking-wide">Oasis de Fragancias Admin</CardTitle>
             <CardDescription>Ingresa para gestionar tu tienda</CardDescription>
           </div>
         </CardHeader>
@@ -69,7 +69,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@nova.com"
+                placeholder="admin@oasisdefragancias.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -107,7 +107,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Usa las credenciales que configuraste en Supabase</p>
+            <p>Solo el administrador tiene acceso a la gestion de la tienda</p>
           </div>
         </CardContent>
       </Card>

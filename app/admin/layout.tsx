@@ -62,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             {sidebarOpen && (
               <div>
-                <h1 className="text-lg font-bold text-brand-wine">Nova</h1>
+                <h1 className="text-lg text-brand-wine font-brand tracking-wide">Oasis de Fragancias</h1>
                 <p className="text-xs text-brand-brown">Admin Panel</p>
               </div>
             )}

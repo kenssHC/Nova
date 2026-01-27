@@ -67,3 +67,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Fuente personalizada para la marca */
+.font-brand {
+  font-family: 'Parisienne', cursive;
+}

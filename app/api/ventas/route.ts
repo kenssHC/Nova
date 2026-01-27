@@ -77,9 +77,9 @@ export async function POST(request: NextRequest) {
     // Obtener información del producto
     const { data: producto, error: productoError } = await supabase
       .from("productos")
-      .select("precio_compra, precio_venta, stock")
+      .select("precio_compra, precio_venta, stock, descuento_porcentaje, descuento_activo")
       .eq("id", body.producto_id)
-      .single() as { data: { precio_compra: number; precio_venta: number; stock: number } | null; error: unknown }
+      .single() as { data: { precio_compra: number; precio_venta: number; stock: number; descuento_porcentaje: number; descuento_activo: boolean } | null; error: unknown }
 
     if (productoError || !producto) {
       return NextResponse.json(
@@ -96,8 +96,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Calcular ganancia
-    const ganancia = (producto.precio_venta - producto.precio_compra) * body.cantidad
+    // Calcular precio final con descuento si está activo
+    let precioFinal = producto.precio_venta
+    if (producto.descuento_activo && producto.descuento_porcentaje > 0) {
+      precioFinal = producto.precio_venta * (1 - producto.descuento_porcentaje / 100)
+    }
+
+    // Calcular ganancia basada en el precio final (con descuento aplicado)
+    const ganancia = (precioFinal - producto.precio_compra) * body.cantidad
 
     // Registrar la venta
     const { data, error } = await supabase
@@ -106,7 +112,7 @@ export async function POST(request: NextRequest) {
         {
           producto_id: body.producto_id,
           cantidad: body.cantidad,
-          precio_venta: producto.precio_venta,
+          precio_venta: precioFinal,
           precio_compra: producto.precio_compra,
           ganancia: ganancia,
           cliente_nombre: body.cliente_nombre || null,

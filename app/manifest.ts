@@ -2,8 +2,8 @@ import { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Nova - Perfumería y Cuidado Personal",
-    short_name: "Nova",
+    name: "Oasis de Fragancias - Perfumería y Cuidado Personal",
+    short_name: "Oasis de Fragancias",
     description: "Tienda de productos de perfumería y cuidado personal",
     start_url: "/",
     display: "standalone",

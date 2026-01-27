@@ -8,17 +8,23 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { useToast } from "@/hooks/use-toast"
-import { ArrowLeft, Loader2, AlertCircle } from "lucide-react"
+import { ArrowLeft, Loader2, AlertCircle, ChevronsUpDown, Check } from "lucide-react"
 import Link from "next/link"
-import { formatPrice } from "@/lib/utils"
+import { formatPrice, cn } from "@/lib/utils"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import Image from "next/image"
 import type { ProductoConCategoria } from "@/types/database"
@@ -30,6 +36,7 @@ export default function NuevaVentaPage() {
   const [productos, setProductos] = useState<ProductoConCategoria[]>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [open, setOpen] = useState(false)
 
   const [formData, setFormData] = useState({
     producto_id: "",
@@ -130,30 +137,81 @@ export default function NuevaVentaPage() {
               <Label htmlFor="producto">
                 Producto <span className="text-red-500">*</span>
               </Label>
-              <Select
-                value={formData.producto_id}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, producto_id: value })
-                }
-                required
-                disabled={submitting}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecciona un producto" />
-                </SelectTrigger>
-                <SelectContent>
-                  {productos.map((producto) => (
-                    <SelectItem
-                      key={producto.id}
-                      value={producto.id}
-                      disabled={producto.stock === 0}
-                    >
-                      {producto.nombre} - Stock: {producto.stock} -{" "}
-                      {formatPrice(producto.precio_venta)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between"
+                    disabled={submitting}
+                  >
+                    {formData.producto_id
+                      ? (() => {
+                          const producto = productos.find((p) => p.id === formData.producto_id)
+                          return producto
+                            ? `${producto.nombre} - Stock: ${producto.stock} - ${formatPrice(producto.precio_venta)}`
+                            : "Buscar producto..."
+                        })()
+                      : "Buscar producto..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[500px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Buscar producto por nombre..." />
+                    <CommandEmpty>No se encontró el producto.</CommandEmpty>
+                    <CommandList>
+                      <CommandGroup>
+                        {productos.map((producto) => (
+                          <CommandItem
+                            key={producto.id}
+                            value={producto.nombre}
+                            onSelect={() => {
+                              setFormData({ ...formData, producto_id: producto.id })
+                              setOpen(false)
+                            }}
+                            disabled={producto.stock === 0}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.producto_id === producto.id ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            <div className="flex items-center gap-2 flex-1">
+                              {producto.imagen_url && (
+                                <div className="relative w-8 h-8 rounded overflow-hidden flex-shrink-0">
+                                  <Image
+                                    src={producto.imagen_url}
+                                    alt={producto.nombre}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                              )}
+                              <div className="flex-1">
+                                <p className="font-medium">{producto.nombre}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  Stock: {producto.stock} • {formatPrice(producto.precio_venta)}
+                                  {producto.descuento_activo && producto.descuento_porcentaje > 0 && (
+                                    <span className="ml-1 text-red-600">
+                                      (-{producto.descuento_porcentaje}%)
+                                    </span>
+                                  )}
+                                </p>
+                              </div>
+                              {producto.stock === 0 && (
+                                <span className="text-xs text-red-600 font-semibold">Sin stock</span>
+                              )}
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
 
             {/* Cantidad */}
@@ -242,9 +300,24 @@ export default function NuevaVentaPage() {
                     <span>{formatPrice(selectedProduct.precio_compra)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Precio de Venta:</span>
+                    <span className="text-muted-foreground">Precio de Venta Original:</span>
                     <span>{formatPrice(selectedProduct.precio_venta)}</span>
                   </div>
+                  
+                  {/* Mostrar descuento si está activo */}
+                  {selectedProduct.descuento_activo && selectedProduct.descuento_porcentaje > 0 && (
+                    <>
+                      <div className="flex justify-between text-red-600">
+                        <span>Descuento Aplicado:</span>
+                        <span className="font-semibold">-{selectedProduct.descuento_porcentaje}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Precio Final con Descuento:</span>
+                        <span className="font-semibold text-green-600">{formatPrice(precioFinal)}</span>
+                      </div>
+                    </>
+                  )}
+                  
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Cantidad:</span>
                     <span>{formData.cantidad} unidades</span>
