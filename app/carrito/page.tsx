@@ -30,7 +30,7 @@ export default function CarritoPage() {
   const handleWhatsAppCheckout = () => {
     if (items.length === 0) return
 
-    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "976575550"
+    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "939919245"
 
     let message = `*Hola! Me gustaria comprar los siguientes productos:*\n\n`
 

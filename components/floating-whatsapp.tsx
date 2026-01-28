@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 
 export function FloatingWhatsApp() {
   const handleClick = () => {
-    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "976575550"
+    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "939919245"
     const message = encodeURIComponent(
       "Hola! Me gustaría obtener más información sobre sus productos."
     )

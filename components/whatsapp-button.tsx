@@ -26,7 +26,7 @@ export function WhatsAppButton({
   size = "default",
 }: WhatsAppButtonProps) {
   const handleClick = () => {
-    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "976575550"
+    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "939919245"
 
     // Mensaje pre-llenado mejorado
     let message = `Hola! Me interesa:\n\n`
