@@ -45,7 +45,7 @@ Crear archivo `.env.local` con:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-NEXT_PUBLIC_WHATSAPP_NUMBER=976575550
+NEXT_PUBLIC_WHATSAPP_NUMBER=939919245
 ```
 
 ## Estructura del Proyecto
